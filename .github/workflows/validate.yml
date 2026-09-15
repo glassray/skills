@@ -43,8 +43,10 @@ jobs:
               code=$(curl -sSL -o /dev/null -w '%{http_code}' --max-time 30 "$u" || echo 000)
               case "$code" in
                 2*|3*) echo "ok   $code $u" ;;
-                *) echo "FAIL $code $u"; exit 1 ;;
+                *) echo "FAIL $code $u"; echo "$u" >> /tmp/broken-links ;;
               esac
-            done || fail=1
+            done
           done
-          exit $fail
+          if [ -s /tmp/broken-links ]; then
+            echo; echo "$(wc -l < /tmp/broken-links) broken link(s) - see FAIL lines above"; exit 1
+          fi
