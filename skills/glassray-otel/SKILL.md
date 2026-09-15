@@ -1,6 +1,6 @@
 ---
-name: glassray
-description: "Send an AI agent's traces to Glassray (app.glassray.ai) over OpenTelemetry and confirm they land. Use when asked to connect or integrate Glassray, send traces to Glassray, point an existing OpenTelemetry / OTLP setup (Python, Node, Ruby, Go, Java, .NET) at Glassray, connect the Vercel AI SDK, Strands Agents, Google ADK, Pydantic AI, OpenLLMetry, OpenInference, OpenLIT or an OpenTelemetry Collector to Glassray, tag traces with glassray.customer / glassray.agent / glassray.flow, debug traces that aren't arriving (401, 403, 415, nothing in the Traces view), or query traces, flows, deviations and LLM cost over the Glassray MCP server."
+name: glassray-otel
+description: "Send an AI agent's traces to Glassray (app.glassray.ai) from an existing OpenTelemetry setup, and confirm they land. Use when asked to connect or integrate Glassray, send traces to Glassray, point an OTel / OTLP exporter (Python, Node, Ruby, Go, Java, .NET) at Glassray, connect the Vercel AI SDK, Strands Agents, Google ADK, Pydantic AI, OpenLLMetry, OpenInference, OpenLIT or an OpenTelemetry Collector to Glassray, tag traces with glassray.customer / glassray.agent / glassray.flow, or debug traces that aren't arriving (401, 403, 415, an empty Traces view). Not for querying an organization's existing traces, flows or deviations - that is the Glassray MCP server."
 license: MIT
 metadata:
   author: glassray
@@ -295,29 +295,20 @@ child. Full attribute list incl. cost: https://glassray.ai/docs/sdk-byo-otel.
 
    Full checklist: https://glassray.ai/docs/sdk-troubleshooting.
 
-## 9 · Query and act on the data - the Glassray MCP server
+## 9 · After traces land
 
-Don't guess at REST endpoints:
+Everything past this point - finding, analyzing and acting on the traces, flows, deviations and
+LLM cost now flowing in - is the Glassray MCP server, not this skill:
 
 ```bash
 claude mcp add --transport http glassray https://app.glassray.ai/api/public/mcp
 ```
 
-OAuth by default; headless: `--header "Authorization: Bearer <org-key>"` with a key from
-**Settings → API keys → MCP access** (`mcp:read` for reads, `mcp:write` to act). That org key is
-deliberately different from the `traces:write` ingest key.
-
-- **Read:** `list_traces` / `get_trace`, `list_flows` / `get_flow` / `list_flow_traces`,
-  `list_deviations` / `get_deviation`, `list_trace_sources` / `list_sync_jobs`,
-  `get_setup_status`, `get_run_status`, `cost_rollup` (spend by model / customer / user / flow).
-- **Ask:** `find_traces` → `analyze_traces` → `refine_traces`; carry the set of trace ids
-  between calls.
-- **Act:** `connect_otlp_source` / `connect_pull_source`, `trigger_trace_sync`,
-  `run_deviation_discovery` / `run_deep_search` (metered; poll `get_run_status`),
-  `create_deviations`, `update_deviation_status`, flow management. `delete_traces` is
-  admins-over-OAuth only and two-step - always show its impact report and get an explicit yes.
-
-Other clients and the full tool reference: https://glassray.ai/docs/mcp-server.
+OAuth by default; headless with `--header "Authorization: Bearer <org-key>"` from **Settings →
+API keys → MCP access**. That org key is deliberately different from the `traces:write` ingest
+key. During verification (§8), `get_setup_status` → `list_traces` → `get_trace` confirms a
+trace and its tags without opening the dashboard. Full tool reference and other clients:
+https://glassray.ai/docs/mcp-server.
 
 ## 10 · Reading the docs
 
