@@ -37,7 +37,7 @@ jobs:
         # smoke test is what proves those.
         run: |
           set -e
-          fail=0
+          rm -f /tmp/broken-links
           for f in skills/*/SKILL.md; do
             grep -oE 'https://glassray\.ai/[A-Za-z0-9./_-]*' "$f" | sed 's/[.)]*$//' | sort -u | while read -r u; do
               code=$(curl -sSL -o /dev/null -w '%{http_code}' --max-time 30 "$u" || echo 000)

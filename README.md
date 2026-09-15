@@ -12,26 +12,26 @@ GitHub Copilot, VS Code, and any other agent that supports it.
 Any agent that supports Agent Skills, via the `skills` CLI:
 
 ```bash
-npx skills add glassray/skills
+npx skills add glassray/skills --skill glassray-otel
 ```
 
 Claude Code, as a plugin:
 
 ```bash
 claude plugin marketplace add glassray/skills
-claude plugin install glassray@glassray-skills
+claude plugin install glassray-otel@glassray-skills
 ```
 
 Or hand an agent the single file: https://glassray.ai/SKILL.md
 
 ## Skills
 
-### glassray
+### glassray-otel
 
-Send an AI agent's traces to Glassray over OpenTelemetry and confirm they land - from whatever
-is already in the repo - then query them. Reads the repo first, routes by what it finds, tags
+Send an AI agent's traces to Glassray from whatever OpenTelemetry setup is already in the repo,
+and confirm they land. Reads the repo first, routes by what it finds, tags
 every trace with `glassray.customer` / `agent` / `flow`, and refuses to call it done until a
-trace has arrived. [Read the skill.](skills/glassray/SKILL.md)
+trace has arrived. [Read the skill.](skills/glassray-otel/SKILL.md)
 
 **Use when:**
 
@@ -41,8 +41,9 @@ trace has arrived. [Read the skill.](skills/glassray/SKILL.md)
   OpenInference, OpenLIT or an OpenTelemetry Collector at Glassray
 - Tagging traces so Glassray can slice them by customer, agent, flow, user and session
 - Traces aren't arriving - `401`, `403`, `415`, or an empty Traces view
-- Finding, analyzing and acting on traces, flows, deviations and LLM cost over the Glassray
-  MCP server
+
+**Not for** querying an organization's existing traces, flows or deviations - that is the
+[Glassray MCP server](https://glassray.ai/docs/mcp-server).
 
 **Docs:** [Send traces with OpenTelemetry](https://glassray.ai/docs/otlp-ingestion)
 

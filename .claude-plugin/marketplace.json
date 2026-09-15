@@ -10,11 +10,11 @@
   },
   "plugins": [
     {
-      "name": "glassray",
-      "description": "Send an AI agent's traces to Glassray over OpenTelemetry and confirm they land: point an existing OTel / OTLP setup, the Vercel AI SDK, Strands Agents, Google ADK, Pydantic AI, OpenLLMetry, OpenInference, OpenLIT or an OTel Collector at Glassray, tag traces with glassray.customer / agent / flow, debug traces that aren't arriving, and query traces, flows, deviations and LLM cost over the Glassray MCP server.",
+      "name": "glassray-otel",
+      "description": "Send an AI agent's traces to Glassray from an existing OpenTelemetry setup and confirm they land: point an OTel / OTLP exporter, the Vercel AI SDK, Strands Agents, Google ADK, Pydantic AI, OpenLLMetry, OpenInference, OpenLIT or an OTel Collector at Glassray, tag traces with glassray.customer / agent / flow, and debug traces that aren't arriving.",
       "source": "./",
       "strict": false,
-      "skills": ["./skills/glassray"],
+      "skills": ["./skills/glassray-otel"],
       "homepage": "https://glassray.ai/docs/otlp-ingestion",
       "license": "MIT",
       "keywords": ["glassray", "opentelemetry", "otlp", "tracing", "observability", "llm", "agents", "evaluation", "mcp"]

@@ -5,7 +5,7 @@ and has to work in both:
 
 1. **Installed as a directory** - `npx skills add glassray/skills`, or the Claude Code plugin
    marketplace (`.claude-plugin/marketplace.json`).
-2. **Fetched as one file** - `https://glassray.ai/SKILL.md` serves `skills/glassray/SKILL.md`
+2. **Fetched as one file** - `https://glassray.ai/SKILL.md` serves `skills/glassray-otel/SKILL.md`
    verbatim to an agent that can only read a URL. (The Glassray monorepo vendors this repo as a
    git submodule to keep that copy identical.)
 
@@ -24,7 +24,7 @@ skills/<name>/SKILL.md            one folder per skill; the folder name must equ
 ## Rules
 
 - **One skill per job, never per language or framework.** Route by what's found in the repo
-  inside the skill (see `glassray` §3) and link the docs page for the specifics.
+  inside the skill (see `glassray-otel` §3) and link the docs page for the specifics.
 - **The description says _when_ to use the skill**, in the words a user would actually type.
   It is the only thing an agent sees before deciding to load the skill.
 - **Cite, don't copy.** Endpoints, attribute names, options and env vars must match the
