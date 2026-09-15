@@ -1,0 +1,53 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  skills:
+    name: Validate skills
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Agent Skills reference validator
+        run: |
+          set -e
+          for d in skills/*/; do
+            npx -y skills-ref validate "$d"
+          done
+      - name: Marketplace manifest is valid JSON and names every skill
+        run: |
+          set -e
+          node -e '
+            const m = require("./.claude-plugin/marketplace.json");
+            const fs = require("fs");
+            const dirs = fs.readdirSync("skills");
+            const listed = m.plugins.flatMap(p => p.skills).map(s => s.replace("./skills/", ""));
+            for (const d of dirs) if (!listed.includes(d)) { console.error("not in marketplace.json:", d); process.exit(1); }
+            for (const s of listed) if (!dirs.includes(s)) { console.error("in marketplace.json but missing:", s); process.exit(1); }
+            console.log("marketplace.json lists", listed.join(", "));
+          '
+      - name: Every docs link in every SKILL.md resolves
+        # Only documentation / site links (glassray.ai). API endpoints on app.glassray.ai are
+        # not pages - the OTLP base path 404s on GET by design - and the skill's own curl
+        # smoke test is what proves those.
+        run: |
+          set -e
+          fail=0
+          for f in skills/*/SKILL.md; do
+            grep -oE 'https://glassray\.ai/[A-Za-z0-9./_-]*' "$f" | sed 's/[.)]*$//' | sort -u | while read -r u; do
+              code=$(curl -sSL -o /dev/null -w '%{http_code}' --max-time 30 "$u" || echo 000)
+              # 405 = the URL exists but is POST-only (the docs-search MCP endpoint answers GET that way).
+              case "$code" in
+                2*|3*|405) echo "ok   $code $u" ;;
+                *) echo "FAIL $code $u"; echo "$u" >> /tmp/broken-links ;;
+              esac
+            done
+          done
+          if [ -s /tmp/broken-links ]; then
+            echo; echo "$(wc -l < /tmp/broken-links) broken link(s) - see FAIL lines above"; exit 1
+          fi
